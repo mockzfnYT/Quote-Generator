@@ -1,225 +1,401 @@
-# Quote Generator
-# 💬 Inspirational Quote Generator
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-A beautiful, responsive web application that delivers wisdom and inspiration through carefully curated quotes. Featuring smooth animations, category filtering, and a modern glassmorphism design that makes every quote feel special.
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
 
-## 🌟 Live Demo
+        .container {
+            max-width: 800px;
+            margin: 20px;
+            position: relative;
+        }
 
-**[Try it live here!](http://mockzfnyt.github.io/Quote-Generator/)**
+        .category-selector {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-## 📖 About
+        .category-selector select {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+        }
 
-The Inspirational Quote Generator brings you meaningful quotes from history's greatest minds, thinkers, and personalities. With over 350 carefully selected quotes across multiple categories, it's designed to inspire, motivate, and provide daily wisdom for personal growth and reflection.
+        .category-selector select:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
 
-Key features:
-- **Curated Content** - High-quality quotes from notable figures
-- **Category Filtering** - Find quotes that match your current mood or need
-- **Anti-Repetition** - Smart algorithm prevents consecutive duplicate quotes
-- **Smooth Animations** - Beautiful transitions that enhance the reading experience
+        .category-selector select:focus {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
 
-## ✨ Features
+        .quote-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-### Quote Collection
-- **350+ Unique Quotes** - Extensive library of meaningful, impactful quotes
-- **7 Categories** - Organized by theme for easy discovery
-- **Anti-Repetition System** - Prevents showing the same quote twice in a row
-- **Attribution** - Proper author credits for every quote
+        .quote-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s;
+        }
 
-### User Experience
-- **Smooth Animations** - Elegant fade transitions and shimmer effects
-- **Keyboard Shortcuts** - Press Space or Enter for quick quote generation
-- **Responsive Design** - Perfect on desktop, tablet, and mobile devices
-- **Glassmorphism UI** - Modern frosted glass aesthetic
-- **Floating Elements** - Subtle background animations
+        .quote-card.shimmer::before {
+            left: 100%;
+        }
 
-### Technical Features
-- **Quotable API Integration** - Live data from a reliable quote service
-- **Category Filtering** - Real-time quote filtering by theme
-- **Fast Loading** - Optimized for quick quote delivery
-- **Error Handling** - Graceful fallbacks for network issues
+        .quote-text {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            position: relative;
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.5s ease;
+        }
 
-## 🎯 Quote Categories
+        .quote-text.fade-out {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
 
-### 💪 Motivation
-Inspiring quotes to fuel your drive, overcome challenges, and pursue your goals with determination.
+        .quote-text.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-### 🧠 Wisdom
-Timeless insights and philosophical thoughts from great thinkers throughout history.
+        .quote-text::before,
+        .quote-text::after {
+            content: '"';
+            font-size: 4rem;
+            color: #667eea;
+            position: absolute;
+            font-family: 'Times New Roman', serif;
+            opacity: 0.3;
+        }
 
-### ❤️ Love
-Beautiful reflections on love, relationships, and the connections that make life meaningful.
+        .quote-text::before {
+            top: -20px;
+            left: -30px;
+        }
 
-### 🏆 Success
-Quotes about achievement, perseverance, and the mindset needed to reach your potential.
+        .quote-text::after {
+            bottom: -40px;
+            right: -20px;
+        }
 
-### 🌱 Life
-Profound observations about existence, growth, and the human experience.
+        .quote-author {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 40px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.5s ease 0.1s;
+        }
 
-### 😄 Funny
-Witty and humorous quotes to brighten your day and add some levity to life.
+        .quote-author.fade-out {
+            opacity: 0;
+            transform: translateY(20px);
+        }
 
-### 😢 Sad
-Thoughtful quotes that acknowledge life's challenges and provide comfort during difficult times.
+        .quote-author.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-## 🚀 Usage
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
 
-### Online
-Simply visit [http://mockzfnyt.github.io/Quote-Generator/](http://mockzfnyt.github.io/Quote-Generator/) and start discovering inspiring quotes!
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
 
-### Local Development
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/mockzfnyt/Quote-Generator.git
-   ```
+        .btn:active {
+            transform: translateY(-1px);
+        }
 
-2. Navigate to the project directory:
-   ```bash
-   cd Quote-Generator
-   ```
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
 
-3. Open `index.html` in your browser or serve it locally:
-   ```bash
-   # Using Python 3
-   python -m http.server 8000
-   
-   # Using Node.js (if you have http-server installed)
-   npx http-server
-   ```
+        .btn:hover::before {
+            left: 100%;
+        }
 
-## 🎮 Controls
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
 
-- **Category Dropdown** - Select from 7 themed categories or "All Quotes"
-- **New Quote Button** - Generate a fresh quote from your selected category
-- **Keyboard Shortcuts**:
-  - **Spacebar** - Get new quote
-  - **Enter** - Get new quote
-- **Auto-Start** - Automatically loads a quote when the page opens
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
 
-## 🛠️ Built With
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
 
-- **HTML5** - Semantic structure and modern markup
-- **CSS3** - Advanced animations, glassmorphism, and responsive design
-- **Vanilla JavaScript** - Clean, dependency-free functionality
-- **Quotable API** - Reliable quote data source
-- **Google Fonts** - Georgia serif for elegant typography
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 70%;
+            right: 10%;
+            animation-delay: 2s;
+        }
 
-## 🎨 Design Features
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 40%;
+            left: 80%;
+            animation-delay: 4s;
+        }
 
-- **Glassmorphism Interface** - Modern frosted glass card design
-- **Gradient Backgrounds** - Beautiful purple-to-blue color transitions
-- **Smooth Animations** - Fade transitions and shimmer effects
-- **Floating Elements** - Subtle background shapes that gently float
-- **Typography Focus** - Elegant serif fonts for optimal quote readability
-- **Responsive Layout** - Adapts beautifully to all screen sizes
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
 
-## 💝 Perfect For
+        @media (max-width: 768px) {
+            .quote-card {
+                padding: 40px 30px;
+                margin: 10px;
+            }
+            
+            .quote-text {
+                font-size: 1.4rem;
+            }
+            
+            .quote-text::before,
+            .quote-text::after {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
 
-### Personal Development
-- **Daily Inspiration** - Start your day with motivational quotes
-- **Reflection** - Contemplate life's deeper meanings
-- **Mood Lifting** - Find quotes that match or improve your current state
+    <div class="container">
+        <div class="category-selector">
+            <select id="categorySelect" onchange="onCategoryChange()">
+                <option value="all">All Quotes</option>
+                <option value="motivation">Motivation</option>
+                <option value="wisdom">Wisdom</option>
+                <option value="love">Love</option>
+                <option value="success">Success</option>
+                <option value="life">Life</option>
+                <option value="funny">Funny</option>
+                <option value="sad">Sad</option>
+            </select>
+        </div>
+        
+        <div class="quote-card" id="quoteCard">
+            <div class="quote-text" id="quoteText">
+                Choose a category above and click the button below to discover wisdom, inspiration, and thoughts that might just change your day.
+            </div>
+            <div class="quote-author" id="quoteAuthor">
+                — Ready when you are
+            </div>
+            <button class="btn" id="newQuoteBtn" onclick="getNewQuote()">
+                New Quote
+            </button>
+        </div>
+    </div>
 
-### Professional Use
-- **Presentations** - Add inspiring quotes to speeches or slides
-- **Social Media** - Share meaningful content with your audience
-- **Team Building** - Use motivational quotes in workplace settings
+ <script>
+(async () => {
+  // Map our category names to Quotable tags
+  const tagMap = {
+    motivation: 'motivational',
+    wisdom:     'wisdom',
+    love:       'love',
+    success:    'success',
+    life:       'life',
+    funny:      'humor',
+    sad:        'sad'
+  };
 
-### Educational Settings
-- **Writing Inspiration** - Spark creativity for essays and projects
-- **Discussion Starters** - Generate topics for philosophical conversations
-- **Character Education** - Teach values through wisdom quotes
+  // 1) Fetch 50 quotes per category
+  const quotes = {};
+  for (const [category, tag] of Object.entries(tagMap)) {
+    try {
+      const res = await fetch(`https://api.quotable.io/quotes?limit=50&tags=${tag}`);
+      const { results } = await res.json();
+      quotes[category] = results.map(q => ({
+        text:   q.content,
+        author: q.author
+      }));
+    } catch (err) {
+      console.error(`Failed to load ${category}:`, err);
+      quotes[category] = []; // fallback to empty array
+    }
+  }
 
-## 📊 Quote Statistics
+  // 2) Combine all into one “all” category
+  const allQuotes = Object.values(quotes).flat();
 
-- **Total Quotes**: 350+
-- **Categories**: 7 themed collections
-- **Average Length**: Optimized for readability and impact
-- **Update Frequency**: Real-time via Quotable API
-- **Quality Control**: Curated content from verified sources
+  // 3) State
+  let currentCategory    = 'all';
+  let currentQuoteIndex  = -1;
 
-## 📱 Browser Support
+  function getCurrentQuotes() {
+    return currentCategory === 'all'
+      ? allQuotes
+      : quotes[currentCategory];
+  }
 
-- ✅ Chrome (latest) - Full feature support
-- ✅ Firefox (latest) - Complete functionality
-- ✅ Safari (latest) - Optimized for Apple devices
-- ✅ Edge (latest) - Full compatibility
+  function onCategoryChange() {
+    const select = document.getElementById('categorySelect');
+    currentCategory   = select.value;
+    currentQuoteIndex = -1;          // reset so first pick is fresh
 
-## 🌐 API Integration
+    // Load one right away
+    setTimeout(getNewQuote, 200);
+  }
 
-Powered by the [Quotable API](https://quotable.io/):
-- Real-time quote fetching
-- Reliable uptime and performance
-- Extensive quote database
-- Proper attribution and metadata
+  function getNewQuote() {
+    const quoteText   = document.getElementById('quoteText');
+    const quoteAuthor = document.getElementById('quoteAuthor');
+    const quoteCard   = document.getElementById('quoteCard');
 
-## 🤝 Contributing
+    const list = getCurrentQuotes();
+    if (!list.length) return;       // nothing to show
 
-Contributions are welcome! Ways to contribute:
+    // Shimmer effect
+    quoteCard.classList.add('shimmer');
+    setTimeout(() => quoteCard.classList.remove('shimmer'), 600);
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-categories`)
-3. Commit your changes (`git commit -m 'Add philosophy category'`)
-4. Push to the branch (`git push origin feature/new-categories`)
-5. Open a Pull Request
+    // Fade out old
+    quoteText.classList.add('fade-out');
+    quoteAuthor.classList.add('fade-out');
 
-### Ideas for Contribution
-- Additional quote categories
-- Favorite quotes system
-- Social sharing functionality
-- Quote search feature
-- Dark/light theme toggle
-- Quote rating system
+    setTimeout(() => {
+      // Pick a new index (avoid repeat)
+      let next;
+      do {
+        next = Math.floor(Math.random() * list.length);
+      } while (next === currentQuoteIndex && list.length > 1);
+      currentQuoteIndex = next;
 
-### Guidelines
-- Maintain the elegant, minimalist design aesthetic
-- Ensure new features are responsive
-- Keep animations smooth and purposeful
-- Focus on user experience and accessibility
+      // Update DOM
+      const { text, author } = list[next];
+      quoteText.textContent   = text;
+      quoteAuthor.textContent = `— ${author}`;
 
-## 🎯 Use Cases
+      // Fade in new
+      quoteText.classList.replace('fade-out', 'fade-in');
+      quoteAuthor.classList.replace('fade-out', 'fade-in');
 
-### Daily Motivation
-- Morning inspiration routine
-- Overcoming challenges
-- Goal setting and achievement
-- Personal growth journey
+      // Clean up classes
+      setTimeout(() => {
+        quoteText.classList.remove('fade-in');
+        quoteAuthor.classList.remove('fade-in');
+      }, 500);
 
-### Content Creation
-- Social media posts
-- Blog post inspiration
-- Presentation materials
-- Creative writing prompts
+    }, 250);
+  }
 
-### Educational
-- Philosophy discussions
-- Character development
-- Critical thinking exercises
-- Literature analysis
+  // Wire up category selector
+  document.getElementById('categorySelect')
+    .addEventListener('change', onCategoryChange);
 
-## 📄 License
+  // Space or Enter to advance
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.code === 'Enter') {
+      e.preventDefault();
+      getNewQuote();
+    }
+  });
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+  // Auto‐start
+  setTimeout(getNewQuote, 1000);
 
-## 🌟 Acknowledgments
-
-- Powered by [Quotable API](https://quotable.io/) for reliable quote data
-- Inspired by the timeless wisdom of great thinkers throughout history
-- Thanks to all the philosophers, writers, and leaders whose words continue to inspire
-- Built with love to spread positivity and wisdom in the digital age
-
-## 📞 Support
-
-If you encounter any issues or have suggestions, please [open an issue](https://github.com/mockzfnyt/Quote-Generator/issues) on GitHub.
-
-### Troubleshooting
-- **Quotes not loading**: Check your internet connection
-- **Repetitive quotes**: Try switching categories and back
-- **Slow performance**: Refresh the page to reset the cache
-
----
-
-**"The best way to find yourself is to lose yourself in the service of others."** - Mahatma Gandhi
-
----
-
-Made with 💖 by [mockzfnyt](https://github.com/mockzfnyt) - Spreading wisdom one quote at a time
+})();
+</script>
